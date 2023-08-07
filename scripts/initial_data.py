@@ -17,9 +17,9 @@ t, T = [0, 600], [800, 20]
 # fraction step (0.01 recomended)
 delta_x=0.05
 # time step (1 second reccomended)
-delta_t=0.1
+delta_t=0.5
 # Temperature step (1 Celcius recomended)
-delta_T=1
+delta_T=0.5
 
 
 
