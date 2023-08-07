@@ -36,7 +36,9 @@ class Plot (Fraction):
         self.temp_b=self.Factors.temp_b
         
         
-        # Time
+        #########################################
+        # for TTTT
+        #########################################
         # Start Curves
         self.start_f=self.Factors.tau_f[:, 0]
         self.start_p=self.Factors.tau_p[:, 0]
@@ -46,7 +48,7 @@ class Plot (Fraction):
         self.end_f=self.Factors.tau_f[:, -1]
         self.end_p=self.Factors.tau_p[:, -1]
         self.end_b=self.Factors.tau_b[:, -1]
-        
+        ##########################################
         # Plot TTT diagram
         self.TTT=self.PlottingTTT()
 
@@ -76,6 +78,9 @@ class Plot (Fraction):
         plt.legend()
         plt.grid()
         return fig01
+    
+    def PlottingPhaseChange(self):
+        fig02=plt.figure()
             
         
         
