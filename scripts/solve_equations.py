@@ -16,16 +16,17 @@ from sigmoidal import Sigmoidal
 from factors import Factors
 import matplotlib.pyplot as plt
 from fraction import Fraction
-from initial_data import Composition, t, T, delta_x
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 
 
 class Solve (Fraction):
     
-    def __init__(self, Composition=Composition, t=t, T=T, delta_x=0.1):
+    def __init__(self, Composition=Composition, t=t, T=T, delta_x=0.1, 
+                 delta_T=delta_T, delta_t=delta_t):
         
-        self.Factors=Factors(Composition)
-        self.Sigmoidal=Sigmoidal(delta_x)
+        self.Factors=Factors()
+        self.Sigmoidal=Sigmoidal()
         self.Fraction=Fraction(Composition, t, T)
         self.t_int=self.Fraction.t_int
         self.T_int=self.Fraction.T_int
@@ -246,12 +247,11 @@ class Solve (Fraction):
 
 Steel=Solve()
 # f_01=Steel.f_01
-f_02=Steel.f_02
+# f_02=Steel.f_02
 
 # print(f_01.iloc[-1,:])
 print('###################')
-print('###################')
-print(f_02[-1, :])
+print(Steel.f_02[-1, :])
      
 
 
