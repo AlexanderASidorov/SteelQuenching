@@ -12,7 +12,7 @@ from scipy.interpolate import splrep, splev, interp1d
 from scipy.optimize import root
 from alloy import Alloy
 from sigmoidal import Sigmoidal
-from initial_data import Composition, t, T, delta_x
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 
 
@@ -24,14 +24,15 @@ class Factors(Sigmoidal, Alloy):
     # n2=3
     K=273.15
     R=8.314459
-    delta_T=1 # шаг по температуре
-    delta_t=1 # шаг по времени
+  
         
-    def __init__(self, Composition):
+    def __init__(self, Composition=Composition, delta_T=delta_T, delta_t=delta_t):
         
         self.Alloy=Alloy(Composition)
         self.Sigmoidal=Sigmoidal()
         self.delta_x=self.Sigmoidal.delta_x
+        self.delta_T= delta_T
+        self.delta_t=delta_t
                        
         # Factor for each phase
         self.factor_f=self.get_ferrite_factor()[0]
