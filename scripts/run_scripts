@@ -11,4 +11,5 @@ from solve_equations import Solve
 from plot import Plot
 
 Steel=Solve()
+data=Steel.data
 fig01=Plot()
