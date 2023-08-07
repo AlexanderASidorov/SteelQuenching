@@ -6,7 +6,7 @@ Created on Sun Jul 23 15:32:22 2023
 @author: aas
 """
 import numpy as np
-from initial_data import Composition, t, T, delta_x
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 #%%
 
