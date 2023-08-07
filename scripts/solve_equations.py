@@ -49,6 +49,9 @@ class Solve (Fraction):
         # Second way of solving system of equations
         self.f_02=self.solve_02()
         
+        # Data frame with results
+        self.data=self.create_dataframe()
+        
         
         
     def get_fraction_increment (self):
@@ -74,15 +77,18 @@ class Solve (Fraction):
         Pandas dataframe for collecting fraction data
 
         """      
-        f = pd.DataFrame(columns=['t', 'T', 'ferrite', 'pearlite','bainite', 'martensite', 'austenite'])
+        f = pd.DataFrame(columns=['t', 'T', 'Ferrite', 'Pearlite','Bainite', 'Martensite', 'Austenite'])
         f['t'] = self.t_int
         f['T'] = self.T_int
         f.fillna(0, inplace=True)
-        f.loc[0, 'ferrite'] = self.f_f[0]
-        f.loc[0, 'pearlite'] = self.f_p[0]
-        f.loc[0, 'bainite'] = self.f_b[0]
-        f.loc[0, 'martensite'] = self.f_m[0]
-        f.loc[0, 'austenite'] = 1. - self.f_f[0] - self.f_p[0] - self.f_b[0] - self.f_m[0]
+        f['Ferrite'] = self.f_02[:,0]
+        f['Pearlite'] = self.f_02[:,1]
+        f['Bainite'] = self.f_02[:,2]
+        f['Martensite'] = self.f_02[:,3]
+        f['Austenite'] = 1. - self.f_02[:,0] - self.f_02[:,1] - self.f_02[:,2] - self.f_02[:,3]
+        for i in range(len(f['Austenite'])):
+            if f['Austenite'][i]<0.0000001: f['Austenite'][i]=0
+            else: pass
         return f
     
 
@@ -109,56 +115,56 @@ class Solve (Fraction):
         f_m_inc[1:] = np.diff(f_m)
 
         # create dataframe for phase fractions
-        f = pd.DataFrame(columns=['t', 'T', 'ferrite', 'pearlite',
-                                  'bainite', 'martensite', 'austenite'])
+        f = pd.DataFrame(columns=['t', 'T', 'Ferrite', 'Pearlite',
+                                  'Bainite', 'Martensite', 'Austenite'])
         f['t'] = t
         f['T'] = T
         f.fillna(0, inplace=True)
-        f.loc[0, 'ferrite'] = f_f[0]
-        f.loc[0, 'pearlite'] = f_p[0]
-        f.loc[0, 'bainite'] = f_b[0]
-        f.loc[0, 'martensite'] = f_m[0]
-        f.loc[0, 'austenite'] = 1. - f_f[0] - f_p[0] - f_b[0] - f_m[0]
+        f.loc[0, 'Ferrite'] = f_f[0]
+        f.loc[0, 'Pearlite'] = f_p[0]
+        f.loc[0, 'Bainite'] = f_b[0]
+        f.loc[0, 'Martensite'] = f_m[0]
+        f.loc[0, 'Austenite'] = 1. - f_f[0] - f_p[0] - f_b[0] - f_m[0]
 
         def f1(i, x, y, z, w):
             if f_f[i] < 1:
-                return f.loc[i-1, 'ferrite'] + f_f_inc[i]*(1 - x - y - z - w)/(1 - f_f[i]) - x
+                return f.loc[i-1, 'Ferrite'] + f_f_inc[i]*(1 - x - y - z - w)/(1 - f_f[i]) - x
             else:
-                return f.loc[i-1, 'ferrite'] + f_f_inc[i]*(1 - y - z - w) - x
+                return f.loc[i-1, 'Ferrite'] + f_f_inc[i]*(1 - y - z - w) - x
 
         def f2(i, x, y, z, w):
             if f_p[i] < 1:
-                return f.loc[i-1, 'pearlite'] + f_p_inc[i]*(1 - x - y - z - w)/(1 - f_p[i]) - y
+                return f.loc[i-1, 'Pearlite'] + f_p_inc[i]*(1 - x - y - z - w)/(1 - f_p[i]) - y
             else:
-                return f.loc[i-1, 'pearlite'] + f_p_inc[i]*(1 - x - z - w) - y
+                return f.loc[i-1, 'Pearlite'] + f_p_inc[i]*(1 - x - z - w) - y
 
         def f3(i, x, y, z, w): 
-            return f.loc[i-1, 'bainite'] + f_b_inc[i]*(1 - x - y - w) - z
+            return f.loc[i-1, 'Bainite'] + f_b_inc[i]*(1 - x - y - w) - z
 
         def f4(i, x, y, z, w): 
-            return f.loc[i-1, 'martensite'] + f_m_inc[i]*(1 - x - y - z) - w
+            return f.loc[i-1, 'Martensite'] + f_m_inc[i]*(1 - x - y - z) - w
         
         for i in range(len(f))[1:]:
-            x0 = [f.loc[i-1, 'ferrite'], f.loc[i-1, 'pearlite'],
-                  f.loc[i-1, 'bainite'], f.loc[i-1, 'martensite']]
+            x0 = [f.loc[i-1, 'Ferrite'], f.loc[i-1, 'Pearlite'],
+                  f.loc[i-1, 'Bainite'], f.loc[i-1, 'Martensite']]
 
             # Solves system of non-linear equations to get corrected phase fractions
             res = root(lambda x: [f1(i, *x), f2(i, *x), f3(i, *x), f4(i, *x)], x0=x0)
 
-            if res.x[0]<0: f.loc[i, 'ferrite']=0 
-            else: f.loc[i, 'ferrite'] = res.x[0]
+            if res.x[0]<0: f.loc[i, 'Ferrite']=0 
+            else: f.loc[i, 'Ferrite'] = res.x[0]
             
-            if res.x[1]<0: f.loc[i, 'pearlite']=0 
-            else:f.loc[i, 'pearlite'] = res.x[1]
+            if res.x[1]<0: f.loc[i, 'Pearlite']=0 
+            else:f.loc[i, 'Pearlite'] = res.x[1]
             
-            if res.x[2]<0: f.loc[i, 'bainite']=0 
-            else: f.loc[i, 'bainite'] = res.x[2]
+            if res.x[2]<0: f.loc[i, 'Bainite']=0 
+            else: f.loc[i, 'Bainite'] = res.x[2]
             
-            if res.x[3]<0: f.loc[i, 'martensite']=0 
-            else: f.loc[i, 'martensite'] = res.x[3]
+            if res.x[3]<0: f.loc[i, 'Martensite']=0 
+            else: f.loc[i, 'Martensite'] = res.x[3]
             
-            if (1. - res.x.sum())<0: f.loc[i, 'austenite'] = 0
-            else: f.loc[i, 'austenite'] = 1. - res.x.sum()
+            if (1. - res.x.sum())<0: f.loc[i, 'Austenite'] = 0
+            else: f.loc[i, 'Austenite'] = 1. - res.x.sum()
             
         return f.round(7)
     
@@ -181,6 +187,7 @@ class Solve (Fraction):
         
         # variable for calculating corrected phase fractions:
         f=np.zeros([len(t),4])
+        
         
         for i in range(len(t))[1:]:
         # coefficients of linear equations
@@ -245,13 +252,14 @@ class Solve (Fraction):
                 if f[i,j] <0: f[i,j]=0
         return f.round(7)
 
-Steel=Solve()
+#Steel=Solve()
+#data=Solve.data
 # f_01=Steel.f_01
 # f_02=Steel.f_02
 
 # print(f_01.iloc[-1,:])
-print('###################')
-print(Steel.f_02[-1, :])
+# print('###################')
+# print(Solve.data.iloc[-1,:]())
      
 
 
