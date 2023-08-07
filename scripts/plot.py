@@ -79,8 +79,8 @@ class Plot (Fraction):
         plt.grid()
         return fig01
     
-    def PlottingPhaseChange(self):
-        fig02=plt.figure()
+    # def PlottingPhaseChange(self):
+    #     fig02=plt.figure()
             
         
         
