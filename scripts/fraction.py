@@ -14,14 +14,14 @@ from alloy import Alloy
 from sigmoidal import Sigmoidal
 from factors import Factors
 import matplotlib.pyplot as plt
-from initial_data import Composition, t, T, delta_x
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 
 
 
 class Fraction (Factors):
     
-    def __init__(self, Composition=Composition, t=t, T=T, delta_x=0.1):
+    def __init__(self, Composition=Composition, t=t, T=T, delta_x=delta_x):
         
         self.Factors=Factors(Composition)
         self.Sigmoidal=Sigmoidal(delta_x)
