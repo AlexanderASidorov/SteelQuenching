@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Aug  7 13:47:50 2023
+
+@author: aas
+"""
+
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t
+from solve_equations import Solve
+
+Steel=Solve()
