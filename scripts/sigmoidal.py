@@ -8,7 +8,7 @@ Created on Mon Jul 24 13:25:54 2023
 import numpy as np
 from scipy import integrate
 from scipy.interpolate import splrep, splev, interp1d
-from initial_data import Composition, t, T, delta_x
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 class Sigmoidal():
     """
