@@ -40,7 +40,6 @@ class Alloy():
         #Calculated coeficients
         self.FC=self.FC_f()
         self.PC=self.PC_f()
-        self.FC=self.FC_f()
         self.BC=self.BC_f()
         self.alpha_martensite = self.alpha_martensite_VanBohemen()
         #Temperatures Start/End
