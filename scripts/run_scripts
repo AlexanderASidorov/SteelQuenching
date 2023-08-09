@@ -9,7 +9,9 @@ Created on Mon Aug  7 13:47:50 2023
 from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 from solve_equations import Solve
 from plot import Plot
+from export import text
 
 Steel=Solve()
 data=Steel.data
 fig01=Plot()
+text=text()
