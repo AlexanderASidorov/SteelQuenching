@@ -20,13 +20,14 @@ from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 
 
-class Solve (Fraction):
+class Solve (Fraction, Alloy):
     
     def __init__(self, Composition=Composition, t=t, T=T, delta_x=0.1, 
                  delta_T=delta_T, delta_t=delta_t):
         
         self.Factors=Factors()
         self.Sigmoidal=Sigmoidal()
+        self.Alloy=Alloy()
         self.Fraction=Fraction(Composition, t, T)
         self.t_int=self.Fraction.t_int
         self.T_int=self.Fraction.T_int
