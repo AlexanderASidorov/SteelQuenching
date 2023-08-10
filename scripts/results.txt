@@ -1,0 +1,8 @@
+t             1800.000000
+T               20.000000
+Ferrite          0.004703
+Pearlite         0.045776
+Bainite          0.112694
+Martensite       0.814264
+Austenite        0.022563
+Name: 3600, dtype: float64
