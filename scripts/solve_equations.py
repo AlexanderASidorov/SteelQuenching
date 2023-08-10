@@ -51,7 +51,7 @@ class Solve (Fraction, Alloy):
         self.f_02=self.solve_02()
         
         # Data frame with results
-        self.data=self.create_dataframe()
+        self.data=self.create_dataframe_results()
         
         
         
@@ -73,7 +73,7 @@ class Solve (Fraction, Alloy):
         
         return f_f_inc, f_p_inc, f_b_inc, f_m_inc
     
-    def create_dataframe(self):
+    def create_dataframe_results(self):
         """
         Pandas dataframe for collecting fraction data
 
@@ -90,6 +90,7 @@ class Solve (Fraction, Alloy):
         for i in range(len(f['Austenite'])):
             if f['Austenite'][i]<0.0000001: f['Austenite'][i]=0
             else: pass
+        
         return f
     
 
