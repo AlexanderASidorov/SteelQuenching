@@ -9,9 +9,11 @@ Created on Mon Aug  7 13:47:50 2023
 from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 from solve_equations import Solve
 from plot import Plot
-from export import text
+from export import text, results2text
 
 Steel=Solve()
 data=Steel.data
+#data_uncorrected=Steel.Fraction.f_data
 fig01=Plot()
 text=text()
+results = results2text(data)
