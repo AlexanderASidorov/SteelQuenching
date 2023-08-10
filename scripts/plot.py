@@ -50,10 +50,21 @@ class Plot (Fraction):
         self.end_b=self.Factors.tau_b[:, -1]
         ##########################################
         # Plot TTT diagram
-        self.TTT=self.PlottingTTT()
+        self.TTT=self.plottingTTT()
+        
+        
+        ###########################################
+        # for f_f, f_p, f_b and f_m
+        ###########################################
+        self.f_f=self.Fraction.f_f
+        self.f_p=self.Fraction.f_p
+        self.f_b=self.Fraction.f_b
+        self.f_m=self.Fraction.f_m
+        ###########################################
+        # Plot uncorrected fracture
+        #self.f_uncorrected=self.plotting_f_uncorrected()
 
-
-    def PlottingTTT(self):
+    def plottingTTT(self):
         fig01=plt.figure()
        
         # Ferrite curves
@@ -79,9 +90,23 @@ class Plot (Fraction):
         plt.grid()
         return fig01
     
-    # def PlottingPhaseChange(self):
-    #     fig02=plt.figure()
-            
+    def plotting_f_uncorrected(self):
+        fig02=plt.figure()
+       
+        # Ferrite curves
+        plt.plot(self.t_int, self.f_f, '--', label="f_f")
+        plt.plot(self.t_int, self.f_p, label="f_p")
+        plt.plot(self.t_int, self.f_b, label="f_b")
+        plt.plot(self.t_int, self.f_m, '-.', label="f_f")
+      
+        # Plot settings
+        #plt.xscale("log")
+        plt.xlabel('Time, sec')
+        plt.ylabel('Fraction')
+        plt.title('Uncorrected fractures')
+        plt.legend()
+        plt.grid()
+        return fig02
         
         
         
