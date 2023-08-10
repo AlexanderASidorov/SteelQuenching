@@ -7,6 +7,7 @@ Created on Fri Jul 28 15:07:47 2023
 """
 
 import numpy as np
+import pandas as pd
 from scipy import integrate
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.optimize import root
@@ -91,6 +92,8 @@ class Fraction (Factors):
         self.tau_p=self.Factors.tau_p
         self.tau_b=self.Factors.tau_b
         
+        # Data frame with f_f, f_p, f_b and f_m results
+        self.f_data=self.create_dataframe()
         
     def draw_thermal_cycle(self):
         """
@@ -237,7 +240,21 @@ class Fraction (Factors):
        #f=1
        return filtr, T, f
         
-        
+    def create_dataframe(self):
+        """
+        Pandas dataframe for collecting fraction data
+
+        """      
+        f = pd.DataFrame(columns=['t', 'T', 'f_f', 'f_p','f_b', 'f_m'])
+        f['t'] = self.t_int
+        f['T'] = self.T_int
+        f.fillna(0, inplace=True)
+        f['f_f'] = self.f_f
+        f['f_p'] = self.f_p
+        f['f_b'] = self.f_b
+        f['f_m'] = self.f_m
+                
+        return f        
         
         
         
