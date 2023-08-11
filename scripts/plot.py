@@ -88,6 +88,7 @@ class Plot (Fraction):
         plt.title('Time Temperature Transformation')
         plt.legend()
         plt.grid()
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         return fig01
     
     def plotting_f_uncorrected(self):
@@ -107,8 +108,61 @@ class Plot (Fraction):
         plt.legend()
         plt.grid()
         return fig02
+    
+    #@staticmethod
+    def plotting_phase_change(data):
+        # Plotting data with X time  
+        
+        fig03=plt.figure()
+        
+        # X data
+        time = data.loc[:,'time']
+        Temperature = data.loc[:, 'Temperature']
+        
+        # Y data
+        Ferrite = data.loc[:,'Ferrite']
+        Pearlite = data.loc[:,'Pearlite']
+        Bainite = data.loc[:,'Bainite']
+        Martensite = data.loc[:,'Martensite']
+        Austenite = data.loc[:, 'Austenite']
+        
+        # Phase change curves
+        plt.plot(time, Ferrite, '--', label="Ferrite")
+        plt.plot(time, Pearlite, label="Pearlite")
+        plt.plot(time, Bainite, label="Bainite")
+        plt.plot(time, Martensite, label="Martensite")
+        plt.plot(time, Austenite, label="Austenite")
+      
+        # Plot settings
+        #plt.xscale("log")
+        plt.xlabel('Time, sec')
+        plt.ylabel('Fraction')
+        plt.title('Phase change')
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        plt.grid()
+        plt.xlim(0, max(time))
+        
+        # Plotting data with X Temperature  
+        fig04=plt.figure()
+        
+        # Phase change curves
+        plt.plot(Temperature, Ferrite, '--', label="Ferrite")
+        plt.plot(Temperature, Pearlite, label="Pearlite")
+        plt.plot(Temperature, Bainite, label="Bainite")
+        plt.plot(Temperature, Martensite, label="Martensite")
+        plt.plot(Temperature, Austenite, label="Austenite")
+      
+        # Plot settings
+        #plt.xscale("log")
+        plt.xlabel(u'Temperature, \u00B0C')
+        plt.ylabel('Fraction')
+        plt.title('Phase change')
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        plt.grid()
+        plt.xlim(max(Temperature), 0)
         
         
+        return fig03, fig04       
         
         
         
