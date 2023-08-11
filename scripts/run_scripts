@@ -11,9 +11,10 @@ from solve_equations import Solve
 from plot import Plot
 from export import text, results2text
 
-Steel=Solve()
-data=Steel.data
-#data_uncorrected=Steel.Fraction.f_data
-fig01=Plot()
-text=text()
-results = results2text(data)
+Steel=Solve() # create an object of Solve class
+data=Steel.data # write main results into pandas dataframe
+fig01=Plot() # plot TTT diagramm
+text=text() # write data necessary for FlowVision simulation
+results = results2text(data) # write final phase composition
+fig02=Plot.plotting_phase_change(data) # plot phase change per time
+# fig03=Plot.plotting_phase_change(data)[1] # plot phase change per Temperature
