@@ -78,9 +78,9 @@ class Solve (Fraction, Alloy):
         Pandas dataframe for collecting fraction data
 
         """      
-        f = pd.DataFrame(columns=['t', 'T', 'Ferrite', 'Pearlite','Bainite', 'Martensite', 'Austenite'])
-        f['t'] = self.t_int
-        f['T'] = self.T_int
+        f = pd.DataFrame(columns=['time', 'Temperature', 'Ferrite', 'Pearlite','Bainite', 'Martensite', 'Austenite'])
+        f['time'] = self.t_int
+        f['Temperature'] = self.T_int
         f.fillna(0, inplace=True)
         f['Ferrite'] = self.f_02[:,0]
         f['Pearlite'] = self.f_02[:,1]
@@ -117,10 +117,10 @@ class Solve (Fraction, Alloy):
         f_m_inc[1:] = np.diff(f_m)
 
         # create dataframe for phase fractions
-        f = pd.DataFrame(columns=['t', 'T', 'Ferrite', 'Pearlite',
+        f = pd.DataFrame(columns=['time', 'Temperature', 'Ferrite', 'Pearlite',
                                   'Bainite', 'Martensite', 'Austenite'])
-        f['t'] = t
-        f['T'] = T
+        f['time'] = t
+        f['Temperature'] = T
         f.fillna(0, inplace=True)
         f.loc[0, 'Ferrite'] = f_f[0]
         f.loc[0, 'Pearlite'] = f_p[0]
