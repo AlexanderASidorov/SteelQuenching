@@ -33,6 +33,7 @@ class Factors(Sigmoidal, Alloy):
         self.delta_x=self.Sigmoidal.delta_x
         self.delta_T= delta_T
         self.delta_t=delta_t
+        
                        
         # Factor for each phase
         self.factor_f=self.get_ferrite_factor()[0]
