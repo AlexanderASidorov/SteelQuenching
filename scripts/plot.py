@@ -6,15 +6,15 @@ Created on Fri Jul 28 12:51:46 2023
 @author: aas
 """
 
-import numpy as np
-from scipy import integrate
-from scipy.interpolate import splrep, splev, interp1d
-from scipy.optimize import root
-from alloy import Alloy
-from sigmoidal import Sigmoidal
+# import numpy as np
+# from scipy import integrate
+# from scipy.interpolate import splrep, splev, interp1d
+# from scipy.optimize import root
+# from alloy import Alloy
+# from sigmoidal import Sigmoidal
 from factors import Factors
 import matplotlib.pyplot as plt
-from initial_data import Composition, t, T, delta_x, delta_T, delta_t
+# from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 from fraction import Fraction
 
 
@@ -63,7 +63,7 @@ class Plot (Fraction):
         ###########################################
         # Plot uncorrected fracture
         #self.f_uncorrected=self.plotting_f_uncorrected()
-
+    
     def plottingTTT(self):
         fig01=plt.figure()
        
@@ -109,11 +109,10 @@ class Plot (Fraction):
         plt.grid()
         return fig02
     
-    #@staticmethod
-    def plotting_phase_change(data):
-        # Plotting data with X time  
+
         
-        fig03=plt.figure()
+    def plotting_phase_change(data):
+        # Plotting data with X time and Temperature  
         
         # X data
         time = data.loc[:,'time']
@@ -126,50 +125,76 @@ class Plot (Fraction):
         Martensite = data.loc[:,'Martensite']
         Austenite = data.loc[:, 'Austenite']
         
+        # The main plot is Phase Fraction - time, so we build all the curves
+        # in this coordinates
+        fig03, ax1 = plt.subplots()
+                      
         # Phase change curves
-        plt.plot(time, Ferrite, '--', label="Ferrite")
-        plt.plot(time, Pearlite, label="Pearlite")
-        plt.plot(time, Bainite, label="Bainite")
-        plt.plot(time, Martensite, label="Martensite")
-        plt.plot(time, Austenite, label="Austenite")
+        ax1.plot(time, Ferrite, '--', label="Ferrite")
+        ax1.plot(time, Pearlite, label="Pearlite")
+        ax1.plot(time, Bainite, label="Bainite")
+        ax1.plot(time, Martensite, label="Martensite")
+        ax1.plot(time, Austenite, label="Austenite")
       
-        # Plot settings
-        #plt.xscale("log")
-        plt.xlabel('Time, sec')
-        plt.ylabel('Fraction')
-        plt.title('Phase change')
-        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        plt.grid()
-        plt.xlim(0, max(time))
+        # X settings for time
+        ax1.set_xlabel('Time, sec')
+        ax1.set_ylabel('Phase Fraction')
+        ax1.grid()
+        ax1.set(xlim=(0, max(time)))
+        ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         
-        # Plotting data with X Temperature  
-        fig04=plt.figure()
+        # add an axis to show the correspondent Temperature
+        ax2 = ax1.twiny()
+        # Add some extra space for the second axis at the bottom
+        fig03.subplots_adjust(bottom=0.1)
+
+        # Move twinned axis ticks and label from top to bottom
+        ax2.xaxis.set_ticks_position("bottom")
+        ax2.xaxis.set_label_position("bottom")
+        # Offset the twin axis below the host
+        ax2.spines["bottom"].set_position(("axes", -0.175))
         
+        
+        # X settings for Temperature
+        ax2.set_xlabel(u'Temperature, \u00B0C')
+        ax2.set(xlim=(max(Temperature), min(Temperature)))
+      
+        
+        
+        return fig03     
+    
+    def plotting_comparison (data_01, data_02, phase):
+        # Plotting data with X time and Temperature  
+        
+        # Y data
+        fraction_caclulated = data_01.loc[:, phase]
+        fraction_FV = data_02.loc[:, phase]
+        
+        # X data
+        time_caclulated = data_01.loc[:, 'time']
+        time_FV = data_02.loc[:, 'time']
+        
+        fig04, ax1 = plt.subplots()
+                      
         # Phase change curves
-        plt.plot(Temperature, Ferrite, '--', label="Ferrite")
-        plt.plot(Temperature, Pearlite, label="Pearlite")
-        plt.plot(Temperature, Bainite, label="Bainite")
-        plt.plot(Temperature, Martensite, label="Martensite")
-        plt.plot(Temperature, Austenite, label="Austenite")
-      
-        # Plot settings
-        #plt.xscale("log")
-        plt.xlabel(u'Temperature, \u00B0C')
-        plt.ylabel('Fraction')
-        plt.title('Phase change')
-        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        plt.grid()
-        plt.xlim(max(Temperature), 0)
+        ax1.plot(time_caclulated, fraction_caclulated, label="Calculated")
+        ax1.plot(time_FV, fraction_FV, label="FlowVison")
+       
+        # X settings for time
+        ax1.set_xlabel('Time, sec')
+        ax1.set_ylabel('Phase Fraction')
+        ax1.grid()
+        ax1.set(xlim=(0, max(time_FV)))
+        ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        
+        plt.title(phase)
+             
         
         
-        return fig03, fig04       
+        return fig04    
         
         
-        
-        
-        
-        
-        
+   
         
         
         
