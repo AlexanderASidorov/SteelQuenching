@@ -1,0 +1,33 @@
+//********************************************************** 
+//***Coefficients necessary to define model in FlowVision*** 
+//********************************************************** 
+
+gs=7; // Grain size coefficient 
+R=8.314459;   // Gas constant
+Q=115060.000000;   // Activation energy 
+
+//Temperatures of transformation start: 
+Ae3=752.25;  // Ferrire transformation start temperature 
+Ae1=734.69;  // Pearlite transformation start temperature 
+Bs=531.67;   // Bainite transformation start temperature 
+Ms=262.50;   // Martensite transformation start temperature 
+
+//Composition coefficients: 
+FC=18031.9416435;  // Ferrire composition coefficient 
+PC=1783.1857409;  // Pearlite composition coefficient 
+BC=0.0852302;  // Bainite composition coefficient 
+MC=0.0149004;  // Martensite composition coefficient 
+
+//n coefficients 
+//Ferrite: 
+n1_F = 0.41; 
+n2_F = 3.00; 
+//Pearlite: 
+n1_P = 0.32; 
+n2_P = 3.00; 
+//Bainite: 
+n1_B = 0.29; 
+n2_B = 2.00; 
+
+//***Chenical composition*** 
+// {'GrainSize': 7.0, 'C': 0.6, 'Mn': 0.8, 'Si': 0.15, 'Ni': 0.04, 'Cr': 0.98, 'Mo': 0.21, 'W': 0.0, 'As': 0.0, 'V': 0, 'Cu': 0}
