@@ -1,8 +1,0 @@
-time           60.000000
-Temperature    20.000000
-Ferrite         0.101854
-Pearlite        0.024724
-Bainite         0.873422
-Martensite      0.000000
-Austenite       0.000000
-Name: 600, dtype: float64
