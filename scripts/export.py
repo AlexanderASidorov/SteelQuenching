@@ -8,12 +8,17 @@ Created on Wed Aug  9 10:50:46 2023
 
 from alloy import Alloy
 from factors import Factors
+import os.path
 
      
 def text ():
     Material=Alloy()
     R=Factors.R
     Q=Factors.Q
+    Composition=Material.w
+    
+    os.chdir('../data') # moving to the directory data
+    # os.chdir('../scripts') # moving to the directory scripts
     fh = open ('data.txt', 'w')
     fh.write('//********************************************************** \n')
     fh.write('//***Coefficients necessary to define model in FlowVision*** \n')
@@ -45,7 +50,11 @@ def text ():
     fh.write('//Bainite: \n')
     fh.write('n1_B = %.2f; \n' % Material.n1_B)
     fh.write('n2_B = %.2f; \n' % Material.n2_B)
-        
+    fh.write('\n')
+    fh.write('//***Chenical composition*** \n')
+    fh.write('// ')  
+    print(Composition, file=fh)
+      
     fh.close()
     return fh
 
