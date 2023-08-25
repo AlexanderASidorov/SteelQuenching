@@ -81,6 +81,7 @@ class Fraction (Factors):
         self.filtr_m=self.get_martensite_fraction ()[0]
         self.T__m=self.get_martensite_fraction ()[1]
         self.f_m=self.get_martensite_fraction ()[2]
+        self.rate_m=self.get_martensite_fraction ()[3]
         
         # Temparature gaps for each phase
         self.temp_f =self.Factors.temp_f
@@ -230,16 +231,16 @@ class Fraction (Factors):
        # initialize necessary variables
        nucleation_time = np.full(t.shape, 0, dtype=float)
        f = np.full(T.shape, 0, dtype=float)
-       
+       rate = np.full(T.shape, 0, dtype=float)
        
        filtr = T < self.Ms
        
        if np.any(filtr):
            f[filtr] = 1 - np.exp(-self.alpha_martensite*(self.Ms - T[filtr]))       
-             
+           rate[filtr] = 3.6*self.alpha_martensite*np.exp(-self.alpha_martensite*(self.Ms - T[filtr]))   
        #f=1
-       return filtr, T, f
-        
+       return filtr, T, f, rate
+       
     def create_dataframe(self):
         """
         Pandas dataframe for collecting fraction data
