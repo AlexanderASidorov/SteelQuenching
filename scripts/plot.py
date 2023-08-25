@@ -24,8 +24,18 @@ class Plot (Fraction):
     
     def __init__(self):
         
+        
+        
         self.Factors=Factors()
         self.Fraction=Fraction()
+        
+        
+        ###########################################
+        # for martensite rate
+        ###########################################
+        self.rate_martensite=self.Fraction.rate_m
+        
+        
         
         self.T_int=self.Fraction.T_int
         self.t_int=self.Fraction.t_int
@@ -51,7 +61,8 @@ class Plot (Fraction):
         ##########################################
         # Plot TTT diagram
         self.TTT=self.plottingTTT()
-        
+        # Plot Martensite growth rate
+        #self.rate_m_plot=self.plotting_rate_martensite()
         
         ###########################################
         # for f_f, f_p, f_b and f_m
@@ -63,6 +74,9 @@ class Plot (Fraction):
         ###########################################
         # Plot uncorrected fracture
         #self.f_uncorrected=self.plotting_f_uncorrected()
+        
+
+        
     
     def plottingTTT(self):
         fig01=plt.figure()
@@ -193,6 +207,23 @@ class Plot (Fraction):
         
         return fig04    
         
+    def plotting_rate_martensite(self):
+        fig05=plt.figure()
+        
+        rate_m=self.rate_martensite
+        time=self.t_int
+       
+        # Ferrite curves
+        plt.plot(time, rate_m, label="Martensite growth rate")
+             
+        # Plot settings
+        #plt.xscale("log")
+        plt.xlabel('Time, sec')
+        plt.ylabel('Rate')
+        plt.title('Martensite growth rate')
+        plt.legend()
+        plt.grid()
+        return fig05    
         
    
         
