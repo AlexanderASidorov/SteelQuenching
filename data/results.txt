@@ -1,8 +1,15 @@
-time           1800.000000
-Temperature      20.000000
-Ferrite           0.004703
-Pearlite          0.045776
-Bainite           0.112695
-Martensite        0.814263
-Austenite         0.022563
-Name: 18000, dtype: float64
+time           60.000000
+Temperature    60.000000
+Ferrite         0.000000
+Pearlite        0.475856
+Bainite         0.000617
+Martensite      0.472564
+Austenite       0.050963
+Name: 240, dtype: float64
+
+//***Chenical composition*** 
+// {'GrainSize': 5.0, 'C': 0.7, 'Mn': 0.5, 'Si': 1.45, 'Ni': 0.2, 'Cr': 0.25, 'Mo': 0.0, 'W': 0.0, 'As': 0.0, 'V': 0, 'Cu': 0.03}
+
+Austenisation Temperature = 850.00; 
+Cooling time = 60.00; 
+Cooling rate = 13.17; 
