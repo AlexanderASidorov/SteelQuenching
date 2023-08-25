@@ -6,15 +6,18 @@ Created on Sun Jul 23 15:32:22 2023
 @author: aas
 """
 import numpy as np
+from sigmoidal import Sigmoidal
 from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 #%%
 
-class Alloy():
+class Alloy(Sigmoidal):
     """
     Alloy properties (composition in wt.% and prior austenite grain size)
     """
     def __init__(self, w=Composition):
+        
+        self.Sigmoidal=Sigmoidal()
         # Alloy composition and n coefficients
         self.w = w
         self.n1_P=0.32
@@ -38,9 +41,17 @@ class Alloy():
         # Grain size
         self.gs = w.get('GrainSize', 0)
         #Calculated coeficients
-        self.FC=self.FC_f()
-        self.PC=self.PC_f()
-        self.BC=self.BC_f()
+        
+        # Check if we use S(x) or I(x) function (see module Sigmoidal for details)
+        if self.Sigmoidal.f==self.Sigmoidal.S:
+            self.FC=self.FC_S()
+            self.PC=self.PC_S()
+            self.BC=self.BC_S()
+        if  self.Sigmoidal.f==self.Sigmoidal.I:
+            self.FC=self.FC_I()
+            self.PC=self.PC_I()
+            self.BC=self.BC_I()
+         
         self.alpha_martensite = self.alpha_martensite_VanBohemen()
         #Temperatures Start/End
         self.Ae3=self.Ae3_Andrews()
@@ -60,10 +71,10 @@ class Alloy():
         return (TF - 32.)*5./9.
 
 
-    def FC_f(self):
+    def FC_S(self):
         """
         Function that expresses the effects of the alloying elements on
-        on the kinetics of ferrite transformation
+        on the kinetics of ferrite transformation (Li aproach)
         """
         C=self.C
         Mn=self.Mn
@@ -78,8 +89,26 @@ class Alloy():
         return np.exp((1.0 + 6.31*C + 1.78*Mn + 0.31*Si + 
                        1.12*Ni + 2.7*Cr + 4.06*Mo))
 
+    def FC_I(self):
+        """
+        Function that expresses the effects of the alloying elements on
+        on the kinetics of ferrite transformation (Saunders aproach)
+        """
+        C=self.C
+        Mn=self.Mn
+        Si=self.Si
+        Ni=self.Ni
+        Cr=self.Cr
+        Mo=self.Mo
+        Co=self.Co
+        As=self.As
+        W=self.W
+        gs=self.gs
+        return 60.*Mn+2.*Ni+68.*Cr+244.*Mo
 
-    def PC_f(self):
+
+
+    def PC_S(self):
         """
         Function that expresses the effects of the alloying elements on
         on the kinetics of pearlite transformation
@@ -95,9 +124,27 @@ class Alloy():
         W=self.W
         gs=self.gs
         return np.exp(-4.25 + 4.12*C + 4.36*Mn + 0.44*Si + 1.71*Ni + 3.33*Cr + 5.19*np.sqrt(Mo))
+
+    def PC_I(self):
+        """
+        Function that expresses the effects of the alloying elements on
+        on the kinetics of perlite transformation (Saunders aproach)
+        """
+        C=self.C
+        Mn=self.Mn
+        Si=self.Si
+        Ni=self.Ni
+        Cr=self.Cr
+        Mo=self.Mo
+        Co=self.Co
+        As=self.As
+        W=self.W
+        gs=self.gs
+        return 1.8+5.4*(Cr+Mo+4.*Mo*Ni)
+
     
 
-    def BC_f(self):
+    def BC_S(self):
         """
         Function that expresses the effects of the alloying elements on
         on the kinetics of bainite transformation
@@ -113,6 +160,23 @@ class Alloy():
         W=self.W
         gs=self.gs
         return np.exp(-10.23 + 10.18*C + 0.85*Mn + 0.55*Ni + 0.9*Cr + 0.36*Mo)
+
+    def BC_I(self):
+        """
+        Function that expresses the effects of the alloying elements on
+        on the kinetics of bainite transformation (Saunders aproach)
+        """
+        C=self.C
+        Mn=self.Mn
+        Si=self.Si
+        Ni=self.Ni
+        Cr=self.Cr
+        Mo=self.Mo
+        Co=self.Co
+        As=self.As
+        W=self.W
+        gs=self.gs
+        return (2.3 + 10.*C + 4.*Cr + 19.*Mo)*10**(-4)
 
 
     def Ae1_Grange(self):
