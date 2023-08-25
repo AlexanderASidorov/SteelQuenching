@@ -7,6 +7,7 @@ Created on Tue Jul 25 13:56:51 2023
 """
 
 import numpy as np
+import pandas as pd
 from scipy import integrate
 from scipy.interpolate import splrep, splev, interp1d
 from scipy.optimize import root
@@ -17,9 +18,11 @@ from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
 
 
-class Factors(Sigmoidal, Alloy):
+class Factors(Alloy):
         
-    Q=27500*4.184
+    Q1=27500*4.184
+    Q2=27500*4.184
+    Q3=37000*4.184
     # n1=0.32
     # n2=3
     K=273.15
@@ -35,29 +38,52 @@ class Factors(Sigmoidal, Alloy):
         self.delta_t=delta_t
         
                        
-        # Factor for each phase
-        self.factor_f=self.get_ferrite_factor()[0]
-        self.factor_p=self.get_pearlite_factor()[0]
-        self.factor_b=self.get_bainite_factor()[0]
+        # Factor for each phase using S function
+        self.factor_fS=self.get_ferrite_factor_S()[0]
+        self.factor_pS=self.get_pearlite_factor_S()[0]
+        self.factor_bS=self.get_bainite_factor_S()[0]
+        
+        # Factor for each phase using I function
+        self.factor_fI=self.get_ferrite_factor_I()[0]
+        self.factor_pI=self.get_pearlite_factor_I()[0]
+        self.factor_bI=self.get_bainite_factor_I()[0]
+        
+        if self.Sigmoidal.f==self.Sigmoidal.S:
+            # if we choose to use S(x) function:
+            self.factor_f=self.get_ferrite_factor_S()[0]
+            self.factor_p=self.get_pearlite_factor_S()[0]
+            self.factor_b=self.get_bainite_factor_S()[0]
+            
+            self.get_ferrite_factor=self.get_ferrite_factor_S
+            self.get_pearlite_factor=self.get_pearlite_factor_S
+            self.get_bainite_factor=self.get_bainite_factor_S
+        
+        if self.Sigmoidal.f==self.Sigmoidal.I:
+            # if we choose to use I(x) function:
+            self.factor_f=self.get_ferrite_factor_I()[0]
+            self.factor_p=self.get_pearlite_factor_I()[0]
+            self.factor_b=self.get_bainite_factor_I()[0]        
+        
+            self.get_ferrite_factor=self.get_ferrite_factor_I
+            self.get_pearlite_factor=self.get_pearlite_factor_I
+            self.get_bainite_factor=self.get_bainite_factor_I        
         
         # Temperature gap for each phase
-        self.temp_f=self.get_ferrite_factor()[1]
-        self.temp_p=self.get_pearlite_factor()[1]
-        self.temp_b=self.get_bainite_factor()[1]
+        self.temp_f=self.get_ferrite_factor_S()[1]
+        self.temp_p=self.get_pearlite_factor_S()[1]
+        self.temp_b=self.get_bainite_factor_S()[1]
         
         
-        # Denumerator
-        #self.Denumerator=self.get_ferrite_factor()[2]
         
         # Time necessary for transform into X fraction
         self.tau_f=self.get_tau_f()
         self.tau_p=self.get_tau_p()
         self.tau_b=self.get_tau_b()
     
-    
-  
-    
-    def get_ferrite_factor(self, T=None):
+#############################################################################
+##########Functions for the case we use S(x)#################################
+#############################################################################
+    def get_ferrite_factor_S(self, T=None):
        # define Temperature gap
        Ts=round(self.Alloy.Ae3, 0)
        Te=round(self.Alloy.Bs, 0)
@@ -65,30 +91,32 @@ class Factors(Sigmoidal, Alloy):
        if T is None:
            T=np.arange(Ts-1, Te-1, -self.delta_T)
        
-       Numerator=self.Alloy.FC
+       Numerator=self.Alloy.FC_S()
        FirstTerm=2**(self.Alloy.n1_F*self.Alloy.gs)
        SecondTerm=(Ts - T)**self.Alloy.n2_F
-       ThirdTerm=np.exp(-self.Q/(self.R*(T + self.K)))
+       ThirdTerm=np.exp(-self.Q1/(self.R*(T + self.K)))
        Denumerator=FirstTerm*SecondTerm*ThirdTerm
        return  Numerator/Denumerator, T #, Denumerator 
 
         
-    def get_pearlite_factor(self, T=None):
+    def get_pearlite_factor_S(self, T=None):
        # define Temperature gap
        Ts=round(self.Alloy.Ae1, 0)
        Te=round(self.Alloy.Bs, 0)
        
        if T is None:
            T=np.arange(Ts-1, Te-1, -self.delta_T)
+       else: T=T
        
-       Numerator=self.Alloy.PC
+       Numerator=self.Alloy.PC_S()
        FirstTerm=2**(self.Alloy.n1_P*self.Alloy.gs)
        SecondTerm=(Ts - T)**self.Alloy.n2_P
-       ThirdTerm=np.exp(-self.Q/(self.R*(T + self.K)))
+       ThirdTerm=np.exp(-self.Q1/(self.R*(T + self.K)))
        Denumerator=FirstTerm*SecondTerm*ThirdTerm
        return  Numerator/Denumerator, T
+ 
     
-    def get_bainite_factor(self, T=None):
+    def get_bainite_factor_S(self, T=None):
        # define Temperature gap
        Ts=round(self.Alloy.Bs, 0)
        Te=round(self.Alloy.Ms, 0)
@@ -96,25 +124,88 @@ class Factors(Sigmoidal, Alloy):
        if T is None:
            T=np.arange(Ts-1, Te-1, -self.delta_T)
 
-       Numerator=self.Alloy.BC
+       Numerator=self.Alloy.BC_S()
        FirstTerm=2**(self.Alloy.n1_B*self.Alloy.gs)
        SecondTerm=(Ts - T)**self.Alloy.n2_B
-       ThirdTerm=np.exp(-self.Q/(self.R*(T + self.K)))
+       ThirdTerm=np.exp(-self.Q1/(self.R*(T + self.K)))
        Denumerator=FirstTerm*SecondTerm*ThirdTerm
        return  Numerator/Denumerator, T
+
+#############################################################################
+##########Functions for the case we use I(x)#################################
+#############################################################################    
+    
+    def Df(self, T): # see formula 8 in Saunders publiction 
+        return np.exp(-self.Q2/(self.R*(T + self.K)))
+    
+    def Dp(self, T): # see formula 9 in Saunders publiction
+        Dp1=1./(np.exp(-self.Q1/(self.R*(T + self.K))))
+        Dp2=(0.5*self.Alloy.Mo)/(np.exp(-self.Q3/(self.R*(T + self.K))))
+        return (Dp1+Dp2)**(-1)
+    
+    def Db(self, T): # see formula 8 in Saunders publiction 
+        return np.exp(-self.Q1/(self.R*(T + self.K)))
+    
+
+    def get_ferrite_factor_I(self, T=None):
+       # define Temperature gap
+       Ts=round(self.Alloy.Ae3, 0)
+       Te=round(self.Alloy.Bs, 0)
+       
+       if T is None:
+           T=np.arange(Ts-1, Te-1, -self.delta_T)
+       
+       Numerator=self.Alloy.FC_I()
+       FirstTerm=6*2**((self.Alloy.gs)/8)
+       SecondTerm=(Ts - T)**self.Alloy.n2_F
+       ThirdTerm=self.Df(T)
+       Denumerator=FirstTerm*SecondTerm*ThirdTerm
+       return  Numerator/Denumerator, T #, Denumerator     
+    
+    def get_pearlite_factor_I(self, T=None):
+       # define Temperature gap
+       Ts=round(self.Alloy.Ae1, 0)
+       Te=round(self.Alloy.Bs, 0)
+       
+       if T is None:
+           T=np.arange(Ts-1, Te-1, -self.delta_T)
+       else: T=T
+       
+       Numerator=self.Alloy.PC_I()
+       FirstTerm=6*2**((self.Alloy.gs)/8)
+       SecondTerm=(Ts - T)**self.Alloy.n2_P
+       ThirdTerm=self.Dp(T)
+       Denumerator=FirstTerm*SecondTerm*ThirdTerm
+       return  Numerator/Denumerator, T    
+
+    def get_bainite_factor_I(self, T=None):
+       # define Temperature gap
+       Ts=round(self.Alloy.Bs, 0)
+       Te=round(self.Alloy.Ms, 0)
+       
+       if T is None:
+           T=np.arange(Ts-1, Te-1, -self.delta_T)
+
+       Numerator=self.Alloy.BC_I()
+       FirstTerm=6*2**((self.Alloy.gs)/8)
+       SecondTerm=(Ts - T)**self.Alloy.n2_B
+       ThirdTerm=self.Db(T)
+       Denumerator=FirstTerm*SecondTerm*ThirdTerm
+       return  Numerator/Denumerator, T    
+    
    
-    def get_factor(self, Ts, Te, Coef_comp, n1, n2, gs):
-        """
-        Function for calculation factor for users's defined temperatures and
-        phases
-        """
-        T=np.arange(Ts-1, Te-1, -self.delta_T)
-        Numerator=Coef_comp
-        FirstTerm=2**(n1*gs)
-        SecondTerm=(Ts - T)**n2
-        ThirdTerm=np.exp(-self.Q/(self.R*(T + self.K)))
-        Denumerator=FirstTerm*SecondTerm*ThirdTerm
-        return  Numerator/Denumerator
+    # def get_factor(self, Ts, Te, Coef_comp, n1, n2, gs):
+    #     """
+    #     Function for calculation factor for users's defined temperatures and
+    #     phases
+    #     """
+    #     T=np.arange(Ts-1, Te-1, -self.delta_T)
+    #     Numerator=Coef_comp
+    #     FirstTerm=2**(n1*gs)
+    #     SecondTerm=(Ts - T)**n2
+    #     ThirdTerm=np.exp(-self.Q/(self.R*(T + self.K)))
+    #     Denumerator=FirstTerm*SecondTerm*ThirdTerm
+    #     return  Numerator/Denumerator
         
     
     
@@ -133,6 +224,8 @@ class Factors(Sigmoidal, Alloy):
         # define Temperature gap
         tau_b=np.outer(self.factor_b, self.Sigmoidal.y)
         return tau_b
+    
+
     
 
     
