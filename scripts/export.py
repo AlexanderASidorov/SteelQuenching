@@ -6,11 +6,12 @@ Created on Wed Aug  9 10:50:46 2023
 @author: aas
 """
 import numpy as np
-from alloy import Alloy
+import os.path
 import pandas as pd
+from alloy import Alloy
 from factors import Factors
 from fraction import Fraction
-import os.path
+
 from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 
      
