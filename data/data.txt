@@ -7,16 +7,16 @@ R=8.314459;   // Gas constant
 Q1=115060.000000;   // Activation energy 
 
 //Temperatures of transformation start: 
-Ae3=790.28;  // Ferrire transformation start temperature 
+Ae3=796.46;  // Ferrire transformation start temperature 
 Ae1=760.69;  // Pearlite transformation start temperature 
-Bs=567.40;   // Bainite transformation start temperature 
-Ms=230.96;   // Martensite transformation start temperature 
+Bs=570.30;   // Bainite transformation start temperature 
+Ms=246.03;   // Martensite transformation start temperature 
 
 //Composition coefficients: 
-FC=2112.2309708;  // Ferrire composition coefficient 
-PC=13.8252966;  // Pearlite composition coefficient 
-BC=0.0959431;  // Bainite composition coefficient 
-MC=0.0136258;  // Martensite composition coefficient 
+FC=1540.7121137;  // Ferrire composition coefficient 
+PC=11.2514837;  // Pearlite composition coefficient 
+BC=0.0576710;  // Bainite composition coefficient 
+MC=0.0141647;  // Martensite composition coefficient 
 
 //n coefficients 
 //Ferrite: 
@@ -30,4 +30,4 @@ n1_B = 0.29;
 n2_B = 2.00; 
 
 //***Chenical composition*** 
-// {'GrainSize': 5.0, 'C': 0.7, 'Mn': 0.5, 'Si': 1.45, 'Ni': 0.2, 'Cr': 0.25, 'Mo': 0.0, 'W': 0.0, 'As': 0.0, 'V': 0, 'Cu': 0.03}
+// {'GrainSize': 5.0, 'C': 0.65, 'Mn': 0.5, 'Si': 1.45, 'Ni': 0.2, 'Cr': 0.25, 'Mo': 0.0, 'W': 0.0, 'As': 0.0, 'V': 0, 'Cu': 0.03}
