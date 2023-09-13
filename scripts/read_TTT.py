@@ -45,7 +45,8 @@ def Fit_k_n_single (t001, t099):
     if errors[3] > 0 and errors[3] < 0.01: 
         pass
     else:
-        popt, pcov = curve_fit(JMAK, xdata, ydata, p0=[10e+10, 4], method='lm')
+        popt, pcov = curve_fit(JMAK, xdata, ydata, 
+                               p0=[10e+10, 4], method='lm', maxfev=5000)
         k=popt[0]
         n=popt[1]
         errors=[pcov[0,0], pcov[0,1], pcov[1,0], pcov[1,1]]
@@ -212,7 +213,7 @@ def calculate_fraction_equilibria(dataframe):
     
     return f_equilibria,p_equilibria, t_eq, f, Equilibria
 
-#Equilibria = calculate_fraction_equilibria(data_TTT)
+Equilibria = calculate_fraction_equilibria(data_TTT)
 
 # def fraction_equilibria_at_temp(dataframe, temp):
 #     new_dataframe=extracting_competitor_temp(dataframe).reset_index(drop=True)
@@ -292,7 +293,7 @@ def Fit_k_n(Dataframe):
         xdata=np.array([t001, t010, t050, t090, t099])
         ydata=np.array([0.01, 0.1, 0.5, 0.9, 0.99])
         popt, pcov = curve_fit(JMAK, xdata, ydata, p0=guess[i], bounds=bounds, 
-                               method='trf')
+                               method='trf', maxfev=5000)
         k[i]=popt[0]
         n[i]=popt[1]
         errors[i]=[pcov[0,0], pcov[0,1], pcov[1,0], pcov[1,1]]
@@ -306,7 +307,8 @@ def Fit_k_n(Dataframe):
         if errors[i, 3] > 0 and errors[i, 3] < 0.01: 
             pass
         else:
-            popt, pcov = curve_fit(JMAK, xdata, ydata, p0=[10e+10, 1.1], method='lm')
+            popt, pcov = curve_fit(JMAK, xdata, ydata, 
+                                   p0=[10e+10, 1.1], method='lm', maxfev=5000)
             k[i]=popt[0]
             n[i]=popt[1]
             errors[i]=[pcov[0,0], pcov[0,1], pcov[1,0], pcov[1,1]]
