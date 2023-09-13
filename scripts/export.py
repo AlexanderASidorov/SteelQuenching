@@ -11,11 +11,12 @@ import pandas as pd
 from alloy import Alloy
 from factors import Factors
 from fraction import Fraction
+from openpyxl import Workbook
 
-from initial_data import Composition, t, T, delta_x, delta_T, delta_t
+from initial_data import Composition, t, T, delta_x, delta_T, delta_t, FunctionType
 
      
-def text ():
+def text (filename ='data.txt'):
     Material=Alloy()
     R=Factors.R
     Q1=Factors.Q1
@@ -25,7 +26,7 @@ def text ():
     
     os.chdir('../data') # moving to the directory data
     # os.chdir('../scripts') # moving to the directory scripts
-    fh = open ('data.txt', 'w')
+    fh = open (filename, 'w')
     fh.write('//********************************************************** \n')
     fh.write('//***Coefficients necessary to define model in FlowVision*** \n')
     fh.write('//********************************************************** \n')
@@ -57,6 +58,8 @@ def text ():
     fh.write('n1_B = %.2f; \n' % Material.n1_B)
     fh.write('n2_B = %.2f; \n' % Material.n2_B)
     fh.write('\n')
+    fh.write('//Function type - %s \n' % FunctionType)
+    fh.write('\n')
     fh.write('//***Chenical composition*** \n')
     fh.write('// ')  
     print(Composition, file=fh)
@@ -64,8 +67,8 @@ def text ():
     fh.close()
     return fh
 
-def results2text(data):
-    fh = open ('results.txt', 'w')
+def results2text(data, filename ='results.txt'):
+    fh = open (filename, 'w')
     print(data.iloc[-1, :], file=fh)
     fh.write('\n')
     fh.write('//***Chenical composition*** \n')
@@ -149,10 +152,64 @@ def TTT2PandasDataframe():
 def TTT2Excel():
     TTT=TTT2PandasDataframe()
     os.chdir('../data') # moving to the directory data
-    TTT.to_excel("TTT.xlsx") 
+    TTT.to_excel("TTT.xlsx")
+    
+
+def k_n_2Excel (dataframe, filename, sheet_name):
+        
+    os.chdir('../data') # moving to the directory data
+    
+       
+    Temp_k_n_feq=pd.DataFrame(data=[dataframe.temp, dataframe.k, 
+                                    dataframe.n, dataframe.f_eq]).transpose()
+ 
+
+
+    
+    
+
+    Temp_k_n_feq.to_excel(filename, sheet_name=sheet_name, index=False)
+             
+    return Temp_k_n_feq
             
-  
-            
+def k_2text(dataframe, filename):
+    os.chdir('../data') # moving to the directory data
+    
+    Temp_k=pd.DataFrame(data=[dataframe.temp, dataframe.k]).transpose()
+    Temp_k.to_csv(filename, header=None, index=None, sep=' ', mode='w')
+    
+       
+    return #Temp_k
+
+
+def n_2text(dataframe, filename):
+    os.chdir('../data') # moving to the directory data
+    
+    Temp_n=pd.DataFrame(data=[dataframe.temp, dataframe.n]).transpose()
+    Temp_n.to_csv(filename, header=None, index=None, sep=' ', mode='w')
+    
+    
+    
+    return #Temp_n
+
+def eq_2text(dataframe, filename):
+    os.chdir('../data') # moving to the directory data
+    
+    Temp_f_eq=pd.DataFrame(data=[dataframe.temp, dataframe.f_eq]).transpose()
+    Temp_f_eq.to_csv(filename, header=None, index=None, sep=' ', mode='w')
+    
+    return #Temp_f_eq
+
+
+
+
+
+
+
+
+
+
+           
   
     
   
