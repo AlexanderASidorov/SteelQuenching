@@ -6,7 +6,7 @@ Created on Fri Jul 28 12:51:46 2023
 @author: aas
 """
 
-# import numpy as np
+import numpy as np
 # from scipy import integrate
 # from scipy.interpolate import splrep, splev, interp1d
 # from scipy.optimize import root
@@ -16,6 +16,7 @@ from factors import Factors
 import matplotlib.pyplot as plt
 # from initial_data import Composition, t, T, delta_x, delta_T, delta_t
 from fraction import Fraction
+from solve_JMAK import JMAK
 
 
 #Composition=Composition
@@ -224,6 +225,77 @@ class Plot (Fraction):
         plt.legend()
         plt.grid()
         return fig05    
+    
+    
+    @staticmethod
+    def plot_f(Phase, Temp):
+        '''
+        Plot phase change at constant temperature based on calculated k and n
+        
+        '''
+        # Search for index whete Temperature == Temp
+        i=Phase[Phase['temp']==Temp].index.values[0]
+        t_s=Phase.time_s[i]
+        t_e=Phase.time_e[i]
+        #time=[Phase.time_s[i], Phase.time_01[i], Phase.time_05[i], Phase.time_09[i], Phase.time_e[i]]
+        time = np.linspace(t_s, t_e, 25)
+        k=Phase.k[i]
+        n=Phase.n[i]
+        f=JMAK.equation(time, k, n)
+        
+        fig06=plt.figure()
+
+       
+        # Ferrite curves
+        plt.plot(time, f)
+             
+        # Plot settings
+        #plt.xscale("log")
+        plt.xlabel('Time, sec')
+        plt.ylabel('Phase fraction')
+        plt.title('Phase change at Temperature = ' + str(Temp) + '$^\circ$C')
+        plt.legend()
+        plt.grid()
+        return fig06
+    
+    @staticmethod
+    def plot_TTT_imp(Ferrite, Pearlite, Bainite):
+        
+        '''
+        Plot phase change at constant temperature based on calculated k and n
+        '''
+        fig07=plt.figure()
+       
+        # Ferrite curves
+        plt.plot(Ferrite.time_s, Ferrite.temp,'--', label="Start Ferrite")
+        plt.plot(Ferrite.time_e, Ferrite.temp, '--' ,label="End Ferrite")
+        # Pearlite curves
+        plt.plot(Pearlite.time_s, Pearlite.temp, label="Start Perlite")
+        plt.plot(Pearlite.time_e, Pearlite.temp, label="End Perlite")
+        # Bainite curves
+        plt.plot(Bainite.time_s, Bainite.temp,'-.', label="Start Bainite")
+        plt.plot(Bainite.time_e, Bainite.temp, '-.', label="End Bainite")
+        
+        # Plot settings
+        plt.xscale("log")
+        plt.xlabel('Time, sec')
+        plt.ylabel(u'Temperature, \u00B0C')
+        plt.title('Time Temperature Transformation')
+        plt.legend()
+        plt.grid()
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        
+        
+        
+        return fig07
+        
+        
+        
+       
+        
+        
+        
+
         
    
         
