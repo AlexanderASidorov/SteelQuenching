@@ -59,7 +59,7 @@ class Equilibria (create):
         Output: 
         two dataframes of the same size with Pearlite and Ferrite
         data, including temperaure, time of start and end transformation,
-        k and n coefficients
+        tau and n coefficients
         '''
         
         i_length=max(len(self.data.Ferrite.index), len(self.data.Pearlite.index))
@@ -74,23 +74,40 @@ class Equilibria (create):
                     #############
                     #############
                     f_[j]=[self.data.Ferrite.time_s.loc[i], self.data.Ferrite.time_e.loc[i],
-                               self.data.Ferrite.k.loc[i], self.data.Ferrite.n.loc[i]]
+                               self.data.Ferrite.tau.loc[i], self.data.Ferrite.n.loc[i]]
                                         
                     p_[j]=[self.data.Pearlite.time_s.loc[j], self.data.Pearlite.time_e.loc[j],
-                               self.data.Pearlite.k.loc[j], self.data.Pearlite.n.loc[j]]
+                               self.data.Pearlite.tau.loc[j], self.data.Pearlite.n.loc[j]]
         ### put everything into pandas dataframe
         # Ferrite
         f_int=pd.DataFrame(data=f_)
-        f_int.columns = ['time_s', 'time_e', 'k', 'n']
+        f_int.columns = ['time_s', 'time_e', 'tau', 'n']
         f_int.insert(0, 'temp', temp_intersection)
         
         
         # Pearlite
         p_int=pd.DataFrame(data=p_)
-        p_int.columns = ['time_s', 'time_e', 'k', 'n']
+        p_int.columns = ['time_s', 'time_e', 'tau', 'n']
         p_int.insert(0, 'temp', temp_intersection)
         
         return f_int, p_int #, temp_intersection, f_, p_
+
+
+    @staticmethod
+    def sum_2_f (t, tau1, n1, t01, tau2, n2, t02):
+        if t>t01: 
+            f1 = JMAK.equation_incubation_tau(t, tau1, n1, t01)
+        else: f1=0.0001
+            
+        if t>t02: 
+            f2 = JMAK.equation_incubation_tau(t, tau2, n2, t02)
+        else: f2=0.0001            
+             
+        return f1+f2, f1, f2
+
+
+
+
     
     def get_equilibria(self):
         '''
@@ -106,35 +123,38 @@ class Equilibria (create):
         column of each dataframe
         
         '''
-        
+  
+      
         
         f_ = self.get_intersaction()[0]
         p_ = self.get_intersaction()[1]
         
         temp=f_['temp']
-        tau001_f, tau099_f = f_['time_s'], f_['time_e']
-        tau001_p, tau099_p = p_['time_s'], p_['time_e']
-        k1, n1 = f_['k'], f_['n']
-        k2, n2 = p_['k'], p_['n']
+        time001_f, time099_f = f_['time_s'], f_['time_e']
+        time001_p, time099_p = p_['time_s'], p_['time_e']
+        tau1, n1 = f_['tau'], f_['n']
+        tau2, n2 = p_['tau'], p_['n']
         f_eq=np.ones(len(temp))
         p_eq=np.ones(len(temp))
         i=-1
         
         while i < len(temp)-1:
             i=i+1
-            t_s=min(tau001_f[i], tau001_p[i])
-            t_e=min(tau099_f[i], tau099_p[i])
-            t_av=t_e-(t_e-t_s)*0.5
-            t_eq=t_av
-            f_eq[i]=JMAK.equation(t_eq, k1[i], n1[i])
-            p_eq[i]=JMAK.equation(t_eq, k2[i], n2[i])
+            # t_s=min(time001_f[i], time001_p[i])
+            # t_e=min(time099_f[i], time099_p[i])
+            # t_av=t_e-(t_e-t_s)*0.5
+            # t_eq=t_av
+            # f_eq[i]=JMAK.equation_incubation_tau(t_eq, tau1[i], n1[i], time001_f[i])
+            # p_eq[i]=JMAK.equation_incubation_tau(t_eq, tau2[i], n2[i], time001_p[i])
             
             #print(i)
-            function = lambda t: JMAK.equation(t, k1[i], n1[i]) + JMAK.equation(t, k2[i], n2[i])
-            t_s=min(tau001_f[i], tau001_p[i])
-            t_e=min(tau099_f[i], tau099_p[i])
+            
+            
+            # function = lambda t: JMAK.equation_incubation_tau(t, tau1[i], n1[i], time001_f[i]) + JMAK.equation_incubation_tau(t, tau2[i], n2[i], time001_p[i])
+            t_s=min(time001_f[i], time001_p[i])
+            t_e=min(time099_f[i], time099_p[i])
             t_av=t_e-(t_e-t_s)*0.5
-            f=function(t_av)
+            f=Equilibria.sum_2_f(t_av, tau1[i], n1[i], time001_f[i], tau2[i], n2[i], time001_p[i])[0]
             j=0
             while f <= 0.99 or f > 1:
                 if f<= 0.99:
@@ -142,20 +162,22 @@ class Equilibria (create):
                     t_s=t_av
                     t_e=t_e
                     t_av=t_e-(t_e-t_s)*0.5
-                    f=function(t_av)
+                    f=Equilibria.sum_2_f(t_av, tau1[i], n1[i], time001_f[i], tau2[i], n2[i], time001_p[i])[0]
                     t_eq=t_av
                 if f>=1:
                     j=j+1
                     t_s=t_s
                     t_e=t_av
                     t_av=t_e-(t_e-t_s)*0.5
-                    f=function(t_av)
+                    f=Equilibria.sum_2_f(t_av, tau1[i], n1[i], time001_f[i], tau2[i], n2[i], time001_p[i])[0]
                     t_eq=t_av
                 #print(t_eq)
-                f_eq[i]=JMAK.equation(t_eq, k1[i], n1[i])
+                f_eq[i]=Equilibria.sum_2_f(t_eq, tau1[i], n1[i], time001_f[i], tau2[i], n2[i], time001_p[i])[1]
+                if f_eq[i] <=0.0001:
+                    f_eq[i]=0
                 f_['f_eq']=f_eq
             #print(f_eq[i])
-                p_eq[i]=JMAK.equation(t_eq, k2[i], n2[i])
+                p_eq[i]=1-f_eq[i]
                 p_['f_eq']=p_eq
         return f_, p_
     
@@ -181,6 +203,9 @@ class Equilibria (create):
                 if Pearlite.temp[i]==self.p_.temp[j]:
                     Pearlite.f_eq[i]=self.p_.f_eq[j]
         return Ferrite, Pearlite
+
+
+
     
                         
 
