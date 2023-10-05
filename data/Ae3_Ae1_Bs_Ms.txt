@@ -1,0 +1,8 @@
+//********************************************************** 
+//***Coefficients necessary to define model in FlowVision*** 
+//********************************************************** 
+
+Ae3=792.00; // Ferrite start temperature 
+Ae1=771.00;   // Pearlite start temperature
+Bs=552.00;   // Bainite start temperature 
+Ms=191.00;   // Martensite start temperature 
