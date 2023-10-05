@@ -155,31 +155,31 @@ def TTT2Excel():
     TTT.to_excel("TTT.xlsx")
     
 
-def k_n_2Excel (dataframe, filename, sheet_name):
+def tau_n_b_2Excel (dataframe, filename, sheet_name):
         
     os.chdir('../data') # moving to the directory data
     
        
-    Temp_k_n_feq=pd.DataFrame(data=[dataframe.temp, dataframe.k, 
-                                    dataframe.n, dataframe.f_eq]).transpose()
+    Temp_k_n__b_feq=pd.DataFrame(data=[dataframe.temp, dataframe.tau, 
+                                    dataframe.n,dataframe.b, dataframe.f_eq]).transpose()
  
 
 
     
     
 
-    Temp_k_n_feq.to_excel(filename, sheet_name=sheet_name, index=False)
+    Temp_k_n__b_feq.to_excel(filename, sheet_name=sheet_name, index=False)
              
-    return Temp_k_n_feq
+    return Temp_k_n__b_feq
             
-def k_2text(dataframe, filename):
+def tau_2text(dataframe, filename):
     os.chdir('../data') # moving to the directory data
     
-    Temp_k=pd.DataFrame(data=[dataframe.temp, dataframe.k]).transpose()
-    Temp_k.to_csv(filename, header=None, index=None, sep=' ', mode='w')
+    Temp_tau=pd.DataFrame(data=[dataframe.temp, dataframe.tau]).transpose()
+    Temp_tau.to_csv(filename, header=None, index=None, sep=' ', mode='w')
     
        
-    return #Temp_k
+    return #Temp_tau
 
 
 def n_2text(dataframe, filename):
@@ -192,6 +192,25 @@ def n_2text(dataframe, filename):
     
     return #Temp_n
 
+def b_2text(dataframe, filename):
+    os.chdir('../data') # moving to the directory data
+    
+    Temp_b=pd.DataFrame(data=[dataframe.temp, dataframe.b]).transpose()
+    Temp_b.to_csv(filename, header=None, index=None, sep=' ', mode='w')
+       
+    return #Temp_b
+
+def time_s_2text(dataframe, filename):
+    os.chdir('../data') # moving to the directory data
+    
+    Temp_time_s=pd.DataFrame(data=[dataframe.temp, dataframe.time_s]).transpose()
+    Temp_time_s.to_csv(filename, header=None, index=None, sep=' ', mode='w')
+       
+    return #Temp_time_s
+
+
+
+
 def eq_2text(dataframe, filename):
     os.chdir('../data') # moving to the directory data
     
@@ -200,7 +219,27 @@ def eq_2text(dataframe, filename):
     
     return #Temp_f_eq
 
+def phasa_points(data, filename ='Ae3_Ae1_Bs_Ms.txt'):
+    os.chdir('../data') # moving to the directory data
+    
+    # calculating necessary constants
+    Ae3=data.Ferrite.temp[0]
+    Ae1=data.Pearlite.temp[0]
+    Bs=data.Bainite.temp[0]
+    Ms=data.Bainite.iloc[-1, 0]
 
+    # writing everything into text file
+    fh = open (filename, 'w')
+    fh.write('//********************************************************** \n')
+    fh.write('//***Coefficients necessary to define model in FlowVision*** \n')
+    fh.write('//********************************************************** \n')
+    fh.write('\n')
+    fh.write('Ae3=%.2f; // Ferrite start temperature \n' %Ae3)
+    fh.write('Ae1=%.2f;   // Pearlite start temperature\n' %Ae1)
+    fh.write('Bs=%.2f;   // Bainite start temperature \n' %Bs)
+    fh.write('Ms=%.2f;   // Martensite start temperature \n' %Ms)
+    fh.close()
+    return fh
 
 
 
