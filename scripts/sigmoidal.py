@@ -48,7 +48,7 @@ class Sigmoidal():
         """
         Creating linspace for phase fraction X 
         """
-        return np.linspace(0.001, 0.999, int((0.999-0.001)/self.delta_x))
+        return np.linspace(0.01, 0.99, int((0.99-0.01)/self.delta_x))
     
     @staticmethod
     def S(x):
@@ -62,8 +62,20 @@ class Sigmoidal():
         """
         Sigmoidal function I(x)
         """
-        return 1./(x**(2.*(1. - x)/3.)*(1. - x)**(2.*x/3.)) 
+        return 1./(x**(2.*(1. - x)/3.)*(1. - x)**(2.*x/3.))
+    
+    @staticmethod
+    def Integral(f, x_start=0.01, x_end=0.99):
+        """
+        Integration of S(x) or I(x)
+        """
+        if x_start ==0:
+            x_start=0.000001
+        f_integrated=integrate.quad(f, x_start, x_end)
+        return f_integrated[0]
+        
             
+        
     def inv(self, f):
         """
         Invariant of Sigmoidal function S(x) or I(x)
@@ -79,7 +91,7 @@ class Sigmoidal():
         """
         y=np.zeros(len(self.x))
         for i in range (0, (len(y))):
-            y[i] = integrate.quad(f, self.x[0]*0.1, self.x[i])[0]
+            y[i] = integrate.quad(f, self.x[0]*0, self.x[i])[0]
         return y, min(y), max(y)       
     
     def Integration_inv(self):
@@ -92,44 +104,5 @@ class Sigmoidal():
     
     
  
-    
- 
-    # def S_inv(self):
-    #     """
-    #     Invariant of Sigmoidal function S(x)
-    #     """
-    #     y=self.S(self.x)
-    #     x=self.x
-    #     S_inv=interp1d(y, x)
-    #     return S_inv
-      
-    # def I_inv(self):
-    #     """
-    #     Invariant of Sigmoidal function S(x)
-    #     """
-    #     y=self.I(self.x)
-    #     x=self.x
-    #     I_inv=interp1d(y, x)
-    #     return I_inv
-    
-    
-    # def Integration (self):
-    #     """
-    #     Integration of S(x)
-    #     """
-    #     y=np.zeros(len(self.x))
-    #     for i in range (0, (len(y))):
-    #         y[i] = integrate.quad(self.S, self.x[0]*0.1, self.x[i])[0]
-    #     return y, min(y), max(y)
-    
-    # def Integration_inv(self):
-    #     """
-    #     Invariant of Integration of S(x)
-    #     """
-    #     x_from_y=interp1d(self.y, self.x, kind= 'cubic')
-    #     y_from_x=interp1d(self.x, self.y, kind='cubic')
-    #     return x_from_y, y_from_x
-        
-    
-    
+  
                            
