@@ -14,7 +14,7 @@ import numpy as np
 # from sigmoidal import Sigmoidal
 from factors import Factors
 import matplotlib.pyplot as plt
-# from initial_data import Composition, t, T, delta_x, delta_T, delta_t
+from initial_data import t, T
 from fraction import Fraction
 from solve_JMAK import JMAK
 
@@ -98,8 +98,8 @@ class Plot (Fraction):
         
         # Plot settings
         plt.xscale("log")
-        plt.xlabel('Time, sec')
-        plt.ylabel(u'Temperature, \u00B0C')
+        plt.xlabel('Time, sec', fontsize=16)
+        plt.ylabel(u'Temperature, \u00B0C', fontsize=16)
         plt.title('Time Temperature Transformation')
         plt.legend()
         plt.grid()
@@ -152,8 +152,8 @@ class Plot (Fraction):
         ax1.plot(time, Austenite, label="Austenite")
       
         # X settings for time
-        ax1.set_xlabel('Time, sec')
-        ax1.set_ylabel('Phase Fraction')
+        ax1.set_xlabel('Time, sec', fontsize=16)
+        ax1.set_ylabel('Phase Fraction', fontsize=16)
         ax1.grid()
         ax1.set(xlim=(0, max(time)))
         ax1.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -171,10 +171,14 @@ class Plot (Fraction):
         
         
         # X settings for Temperature
-        ax2.set_xlabel(u'Temperature, \u00B0C')
+        ax2.set_xlabel(u'Temperature, \u00B0C', fontsize=16)
         ax2.set(xlim=(max(Temperature), min(Temperature)))
       
-        
+        # calculate and plot cooling rate
+        Cooling_rate=(T[0]-T[1])/t[1]
+        plt.figtext(0.15, 0.45, 
+                    'Cooling rate = ' + str(Cooling_rate) + "$^\circ$C/sec ",
+                    fontsize=12)
         
         return fig03     
     
@@ -239,9 +243,12 @@ class Plot (Fraction):
         t_e=Phase.time_e[i]
         #time=[Phase.time_s[i], Phase.time_01[i], Phase.time_05[i], Phase.time_09[i], Phase.time_e[i]]
         time = np.linspace(t_s, t_e, 25)
-        k=Phase.k[i]
+        tau=Phase.tau[i]
         n=Phase.n[i]
-        f=JMAK.equation(time, k, n)
+        #f=JMAK.equation(time, k, n)
+        f=JMAK.equation_incubation_tau(time, tau, n, t_s)
+        
+        
         
         fig06=plt.figure()
 
@@ -254,7 +261,7 @@ class Plot (Fraction):
         plt.xlabel('Time, sec')
         plt.ylabel('Phase fraction')
         plt.title('Phase change at Temperature = ' + str(Temp) + '$^\circ$C')
-        plt.legend()
+        #plt.legend()
         plt.grid()
         return fig06
     
@@ -288,6 +295,25 @@ class Plot (Fraction):
         
         
         return fig07
+    
+    
+    
+    @staticmethod
+    def plot_isothermal_transformation(time, fraction, Temp):
+        fig08=plt.figure()
+
+       
+        # Ferrite curves
+        plt.plot(time, fraction)
+             
+        # Plot settings
+        #plt.xscale("log")
+        plt.xlabel('Time, sec')
+        plt.ylabel('Phase fraction')
+        plt.title('Phase change at Temperature = ' + str(Temp) + '$^\circ$C')
+        #plt.legend()
+        plt.grid()
+        return fig08        
         
         
         
