@@ -227,12 +227,28 @@ class Factors(Alloy):
     
 
     
+# #%%
+# Factors_=Factors()
+# i=50
+# f=Sigmoidal.S
+# tau001_01=Factors_.tau_p[i, 0]
+# tau099_01=Factors_.tau_p[i, -1]
+# ratio_01=tau099_01/tau001_01
 
-    
-    
-    
-    
-    
+
+
+ 
+# Factor_Pearlite=Factors_.factor_pS[i]
+# Current_Temperature=Factors_.temp_p[i]
+# tau001_02=Factor_Pearlite*Sigmoidal.Integral(f, 0, 0.01)
+# tau099_02=Factor_Pearlite*Sigmoidal.Integral(f, 0, 0.99)
+# ratio_02=tau099_02/tau001_02
+
+
+# Sigmoidal_=Sigmoidal()
+# tau099_=Factor_Pearlite*Sigmoidal_.y[-1]
+# tau099_outer=(np.outer(Factor_Pearlite, Sigmoidal_.y))[-1]  
+# tau099_outer=tau099_outer[-1]
     
     
     
